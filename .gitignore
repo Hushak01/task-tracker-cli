@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# App data — generated at runtime, never commit
+tasks.json
+tasks.json.tmp
+
+# VS Code (keep workspace settings out of the repo unless intentional)
+.vscode/
+
+# OS cruft
+Thumbs.db
+Desktop.ini
