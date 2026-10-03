@@ -23,8 +23,31 @@ python -m task_cli list done
 
 ## Development
 
-
-
-## Spec
-
-See `Blueprint__Task_Tracker_CLI.md` and `design.md`.
+- Python version requirement: Python >=3.10
+- Create and activate virtual environment:
+  - Windows (PowerShell):
+    ```powershell
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    ```
+  - POSIX (bash):
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+- Editable install:
+  ```bash
+  pip install -e ".[dev]"
+  ```
+- Running tests:
+  ```bash
+  pytest -v
+  pytest tests/test_store.py -v
+  ```
+- Running the CLI:
+  ```bash
+  python -m task_cli add "Buy groceries"
+  task-cli add "Buy groceries"
+  ```
+- Specifications: See `Blueprint__Task_Tracker_CLI.md` and `design.md`.
+- Implementation Plan: See `task_tracker_implementation_plan.md`.

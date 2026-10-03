@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "task-tracker-cli"
+version = "0.1.0"
+description = "Zero-dependency task tracker CLI"
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+task-cli = "task_cli.cli:main_entry"
+
+[tool.setuptools.packages.find]
+include = ["task_cli*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

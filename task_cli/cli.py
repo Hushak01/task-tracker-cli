@@ -205,6 +205,11 @@ def main(argv: list[str]) -> int:
         return 1
 
 
+def main_entry() -> int:
+    """Console script entry point invoking :func:`main` with ``sys.argv[1:]``."""
+    return main(sys.argv[1:])
+
+
 def _run(argv: list[str]) -> int:
     """Run one CLI invocation and return the process exit code.
 
