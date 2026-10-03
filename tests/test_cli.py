@@ -514,3 +514,43 @@ def test_main_returns_exit_codes_in_process(
     assert captured.out == ""
     assert "Task 9 not found" in captured.err
     assert main([]) == 1
+
+
+# ---------------------------------------------------------------------------
+# Top-level exception guard (X-12, Component 5)
+# ---------------------------------------------------------------------------
+
+
+def test_unexpected_internal_error_is_clean(cwd: Path) -> None:
+    """An unexpected (non-TaskError) bug exits 1 with a clean stderr message.
+
+    Runs a real subprocess that monkeypatches ``tasks.add_task`` to raise
+    ``RuntimeError`` before calling ``cli.main`` exactly as ``__main__`` does.
+    """
+    script = (
+        "import sys\n"
+        "from task_cli import tasks, cli\n"
+        "def boom(*a, **k):\n"
+        "    raise RuntimeError('injected failure')\n"
+        "tasks.add_task = boom\n"
+        "sys.exit(cli.main(sys.argv[1:]))\n"
+    )
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(REPO_ROOT) + os.pathsep + env.get("PYTHONPATH", "")
+    result = subprocess.run(
+        [sys.executable, "-c", script, "add", "x"],
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=30,
+    )
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "Traceback" not in result.stderr
+    assert result.stderr == (
+        "Error: unexpected internal error (RuntimeError: injected failure)\n"
+    )
+    assert read_store(cwd) == {}  # nothing was saved

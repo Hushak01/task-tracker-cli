@@ -182,6 +182,30 @@ def _store_path() -> Path:
 
 
 def main(argv: list[str]) -> int:
+    """CLI entry point: run one invocation and return the process exit code.
+
+    Wraps :func:`_run` in a top-level guard so that no unexpected exception
+    (a bug) ever reaches the user as a Python traceback. Such errors are
+    reported as a one-line message on stderr with exit code 1.
+
+    Only ``Exception`` is caught: ``SystemExit`` and ``KeyboardInterrupt``
+    (``BaseException`` subclasses) propagate normally.
+
+    Returns:
+        0 on success; 1 on any usage error, ``TaskError``, or unexpected
+        internal error. Blueprint: X-12, D-12.
+    """
+    try:
+        return _run(argv)
+    except Exception as exc:  # noqa: BLE001 - deliberate top-level guard (X-12)
+        print(
+            f"Error: unexpected internal error ({type(exc).__name__}: {exc})",
+            file=sys.stderr,
+        )
+        return 1
+
+
+def _run(argv: list[str]) -> int:
     """Run one CLI invocation and return the process exit code.
 
     Flow: parse argv -> load store -> dispatch to ``tasks`` -> save store
